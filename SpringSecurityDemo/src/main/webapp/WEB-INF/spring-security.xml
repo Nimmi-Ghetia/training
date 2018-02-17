@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"  
+             xmlns:beans="http://www.springframework.org/schema/beans"  
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xmlns:context="http://www.springframework.org/schema/context" 
+             xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context    
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+    http://www.springframework.org/schema/security  
+    http://www.springframework.org/schema/security/spring-security.xsd">  
+ <context:component-scan base-package="com.argusoft.springsecuritydemo"></context:component-scan>  
+    <http auto-config="true">
+        <intercept-url pattern="/*" access= "hasRole('ROLE_USER')"></intercept-url>
+        <form-login/>   
+    </http>
+    
+ 
+    <!--<beans:bean id="loginServiceImpl" class="com.argusoft.springsecuritydemo.LoginServiceImpl"/>-->
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="loginServiceImpl">
+            <password-encoder ref="encoder" />
+        </authentication-provider>
+    </authentication-manager>
+    
+    <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <beans:bean id="dataSource"
+                class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  
+        <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <beans:property name="url" value="jdbc:mysql://localhost:3306/Employee" />
+        <beans:property name="username" value="root" />
+        <beans:property name="password" value="root" />
+    </beans:bean>
+    <beans:bean id="template" class="org.springframework.jdbc.core.JdbcTemplate">  
+        <beans:property name="dataSource" ref="dataSource"/>  
+    </beans:bean>
+    <!--    <beans:bean id="authProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="loginServiceImpl"/>
+        <beans:property name="passwordEncoder" ref="encoder" />
+    </beans:bean>-->
+    
+    <!--normal implicit use of password encoder-->
+    <!--    <authentication-manager>
+        <authentication-provider>
+            <password-encoder ref="encoder"/>
+            <user-service>
+                <user name="Nimmi" password="$2a$10$LRgdFviQhYsntKeJIULm6upzfIWqWoTeNquYAPGj9UKQPpxscJYpS" authorities="ROLE_USER"></user>
+                <user name="Helisha" password="456" authorities="ROLE_USER"></user>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>-->
+    <!--    <authentication-manager>
+        <authentication-provider>
+            <jdbc-user-service
+                authorities-by-username-query="select username,role from login where username=?"
+                users-by-username-query="select username,password,active from login where username=?"
+                data-source-ref="dataSource" />
+            <password-encoder ref="encoder"/>
+        </authentication-provider>
+    </authentication-manager>-->
+
+</beans:beans>  
