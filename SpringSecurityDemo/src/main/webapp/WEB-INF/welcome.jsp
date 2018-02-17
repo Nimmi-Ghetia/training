@@ -8,5 +8,8 @@
     <body>
         <h1>Hello World!</h1>
         ${message}
+        
+        
+        <a href="logout">LOGOUT</a>
     </body>
 </html>
